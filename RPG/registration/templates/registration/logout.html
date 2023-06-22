@@ -1,0 +1,9 @@
+{% if user.is_authenticated %}
+  <p>Вы уверены, что хотите выйти из аккаунта?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+  </form>
+{% else %}
+  <p>Вы уже вышли из аккаунта.</p>
+{% endif %}

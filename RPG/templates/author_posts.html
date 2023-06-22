@@ -1,0 +1,41 @@
+<table>
+  <thead>
+    <tr>
+      <th>Отклик</th>
+      <th>Автор</th>
+      <th>Статус</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for response in responses %}
+      <tr>
+        <td>{{ response.text }}</td>
+        <td>{{ response.author }}</td>
+        <td>
+          {% if response.accepted %}
+            Принят
+          {% else %}
+            Отклонен
+          {% endif %}
+        </td>
+        <td>
+          {% if not response.accepted %}
+            <form method="post" action="{% url 'author_posts' %}">
+              {% csrf_token %}
+              <input type="hidden" name="response_id" value="{{ response.id }}">
+              <input type="hidden" name="action" value="accept">
+              <button type="submit">Принять</button>
+            </form>
+            <form method="post" action="{% url 'author_posts' %}">
+              {% csrf_token %}
+              <input type="hidden" name="response_id" value="{{ response.id }}">
+              <input type="hidden" name="action" value="reject">
+              <button type="submit">Отклонить</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

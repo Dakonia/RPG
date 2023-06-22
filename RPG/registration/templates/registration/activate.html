@@ -1,0 +1,7 @@
+<form method="post">
+  {% csrf_token %}
+  <p>Вам на почту отправлен код активации </p>
+  <label for="activation_code">Код активации:</label>
+  <input type="text" id="activation_code" name="activation_code"><br>
+  <button type="submit">Активировать</button>
+</form>

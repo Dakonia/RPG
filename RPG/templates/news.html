@@ -1,0 +1,26 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+
+<h1>{{ news.title|safe }}</h1>
+<p>{{ news.text|safe }}</p>
+{% if user.is_authenticated %}
+<h2>Отклики</h2>
+<ul>
+  {% for response in responses %}
+    <li>{{ response.author.username }}: {{ response.text }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Оставить отклик</h2>
+<form method="post" action="{% url 'post_detail' pk=news.pk %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Отправить</button>
+</form>
+{% endif %}
+{% endblock content %}
