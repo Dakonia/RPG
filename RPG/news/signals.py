@@ -7,19 +7,19 @@ from django.utils.html import strip_tags
 from .models import Response
 from django.conf import settings
 
-# @receiver(post_save, sender=Response)
-# def send_notification_email(sender, instance, created, **kwargs):
-#     if created:
-#         post = instance.post
-#         author_email = post.author.email
-#         current_site = Site.objects.get_current()
-#         subject = 'Новый отклик на ваш пост'
-#         message = render_to_string(
-#             'email/notification_email.html',
-#             {'post': post, 'site': current_site}
-#         )
-#         plain_message = strip_tags(message)
-#         send_mail(subject, plain_message, settings.EMAIL_HOST_USER, [author_email], html_message=message)
+@receiver(post_save, sender=Response)
+def send_notification_email(sender, instance, created, **kwargs):
+    if created:
+        post = instance.post
+        author_email = post.author.email
+        current_site = Site.objects.get_current()
+        subject = 'Новый отклик на ваш пост'
+        message = render_to_string(
+            'email/notification_email.html',
+            {'post': post, 'site': current_site}
+        )
+        plain_message = strip_tags(message)
+        send_mail(subject, plain_message, settings.EMAIL_HOST_USER, [author_email], html_message=message)
 
 
 

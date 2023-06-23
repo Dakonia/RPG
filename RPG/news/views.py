@@ -121,6 +121,7 @@ def author_posts(request):
     if request.method == 'POST':
         response_id = request.POST.get('response_id')
         action = request.POST.get('action')
+        post_id = request.POST.get('post_id')
 
         if action == 'accept':
             response = get_object_or_404(Response, pk=response_id)
@@ -131,6 +132,7 @@ def author_posts(request):
             response.delete()
 
     return render(request, 'author_posts.html', {'posts': posts})
+
 # def author_posts(request):
 #     user = request.user
 #     posts = Post.objects.filter(author=user)
@@ -150,38 +152,6 @@ def author_posts(request):
 #             response.save()
 #
 #     return render(request, 'author_posts.html', {'posts': posts, 'has_posts': has_posts})
-
-class AuthorPostsView(ListView):
-    model = Post
-    template_name = 'author_posts.html'
-    context_object_name = 'posts'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        author = self.request.user  # Получаем текущего авторизованного пользователя как автора постов
-        context['responses'] = Response.objects.filter(post__author=author)  # Получаем все отклики автора
-        return context
-
-    def post(self, request, *args, **kwargs):
-        response_id = request.POST.get('response_id')
-        action = request.POST.get('action')
-
-        if response_id and action:
-            response = get_object_or_404(Response, id=response_id)
-
-            if action == 'accept':  # Принять отклик
-                response.accepted = True
-                response.save()
-                # Отправить уведомление об принятии отклика на почту пользователю
-                send_notification_resp(sender=Response, instance=response, created=True)
-
-            elif action == 'reject':  # Отклонить отклик
-                # Сначала отправляем уведомление на почту пользователю
-                send_notification_resp(sender=Response, instance=response, created=True)
-                # Затем удаляем отклик
-                response.delete()
-
-        return redirect('author_posts')
 
 
 
